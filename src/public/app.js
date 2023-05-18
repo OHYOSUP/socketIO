@@ -51,11 +51,27 @@ function addMessage(message) {
   ul.appendChild(li);
 }
 
-socket.on("welcome", (user) => {
+socket.on("welcome", (user, count) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room : ${roomName} (${count})`;
   addMessage(`${user} Joined`);
 });
-socket.on("bye", (user) => {
+socket.on("bye", (user, count) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = `Room : ${roomName} (${count})`;
   addMessage(`${user} left`);
 });
 
 socket.on("new_message", addMessage);
+socket.on("room_change", (rooms) => {
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = "";
+  if (!rooms.length) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.appendChild(li);
+  });
+});
